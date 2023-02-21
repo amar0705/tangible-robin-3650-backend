@@ -3,6 +3,10 @@ const { connection } = require("./configs/db");
 const { userRouter } = require("./routes/user.route");
 const { productRouter } = require("./routes/product.route");
 const { cartRouter } = require("./routes/cart.route");
+const { nutrientRouter } = require("./routes/nutrient.route");
+const { foodRouter } = require("./routes/foods.route");
+const { allfoodRouter } = require("./routes/allfood.route");
+const { adminRouter } = require("./routes/admin.routes");
 require("dotenv").config();
 
 const { authenticate } = require("./middlewares/authenticate.middleware");
@@ -17,7 +21,7 @@ app.get("/", (req, res) => {
 const corsOpts = {
   origin: "*",
 
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "DELETE"],
 
   allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -26,6 +30,10 @@ app.use(cors(corsOpts));
 app.use("/users", userRouter);
 app.use("/products", productRouter);
 app.use(authenticate);
+app.use("/admin", adminRouter);
+app.use("/nutrients", nutrientRouter);
+app.use("/foods", foodRouter);
+app.use("/allfoods", allfoodRouter);
 app.use("/cart", cartRouter);
 
 app.listen(process.env.port, async () => {

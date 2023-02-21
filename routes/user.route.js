@@ -7,13 +7,17 @@ require("dotenv").config();
 const userRouter = express.Router();
 
 userRouter.post("/register", async (req, res) => {
-  const { email, pass, name, age } = req.body;
+  const { email, pass, name, age, userType } = req.body;
   try {
     bcrypt.hash(pass, 5, async (err, secure_password) => {
       if (err) {
         console.log(err);
       } else {
-        const user = new UserModel({ email, pass: secure_password, name, age });
+        const user = new UserModel(
+          userType
+            ? { email, pass: secure_password, name, age, userType }
+            : { email, pass: secure_password, name, age, userType: "user" }
+        );
         await user.save();
         res.send({ message: "Registered" });
       }
@@ -39,6 +43,7 @@ userRouter.post("/login", async (req, res) => {
             name: user[0].name,
             email: user[0].email,
             userId: user[0]._id,
+            userType: user[0].userType,
           });
         } else {
           res.send("Wrong Credentials");
